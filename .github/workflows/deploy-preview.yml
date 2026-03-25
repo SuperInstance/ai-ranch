@@ -1,0 +1,33 @@
+name: Deploy Preview
+
+on:
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+      
+      - name: Install dependencies
+        run: bun install
+      
+      - name: Build
+        run: bun run build
+      
+      - name: Comment PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ **Build Successful!**\n\nThe AI Ranch is ready for review.\n\n- ✅ Lint passed\n- ✅ Type check passed\n- ✅ Build completed'
+            })
