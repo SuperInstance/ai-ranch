@@ -16,6 +16,4 @@ jobs:
           bun-version: latest
       - run: bun install
       - run: bun run build
-        continue-on-error: true
       - run: bun run lint
-        continue-on-error: true
